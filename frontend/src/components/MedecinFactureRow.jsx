@@ -15,7 +15,10 @@ const MedecinFactureRow = ({ facture }) => {
   const queryClient = useQueryClient();
   const { mutate: mutateByDelete, isLoading } = useMutation({
     mutationFn: (factureID) => deleteFacture(factureID, userToken),
-    onError: (error) => toast.error(getErrorMessage(error)),
+    onError: (error) => {
+      console.log("error delete", error);
+      toast.error(getErrorMessage(error));
+    },
     onSuccess: () => {
       toast.success("Facture supprimé avec success");
       queryClient.invalidateQueries(["factures"]);

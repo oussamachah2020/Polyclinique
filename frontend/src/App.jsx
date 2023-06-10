@@ -23,6 +23,7 @@ import {
   PatientDashboard,
   PatientLogin,
   PatientOrdonnances,
+  PatientProfile,
   PatientRDVS,
   PatientSignup,
 } from "./pages/patient";
@@ -42,6 +43,7 @@ import AdminRendezVous from "./pages/admin/AdminRendezVous";
 import AdminProfile from "./pages/admin/AdminProfile";
 import FacturePage from "./pages/facture/FacturePage";
 import Factures from "./pages/facture/Factures";
+import { useUserContext } from "./contexts/useUserContext";
 function App() {
   return (
     <div className="App">
@@ -63,6 +65,7 @@ function App() {
             <Route path="ordonnances" element={<PatientOrdonnances />} />
             <Route path="rendezvous" element={<PatientRDVS />} />
             <Route path="factures" element={<PatientFacturesPage />} />
+            <Route path="profile" element={<PatientProfile />} />
           </Route>
 
           {/* medecin routes */}

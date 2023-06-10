@@ -12,6 +12,8 @@ import { postFacture } from "../api/facture";
 import { getErrorMessage } from "../helpers/getErrorMessage";
 
 const SingleMedecinRDVRow = ({ rdv }) => {
+  console.log("single rdv", rdv);
+  console.log("single rdv factures", rdv.facture);
   const { userToken } = useUserContext();
   const queryClient = useQueryClient();
   // modal States
@@ -49,14 +51,19 @@ const SingleMedecinRDVRow = ({ rdv }) => {
     <>
       <tr className="mt-3">
         <td>{formatDate(rdv.date)}</td>
+        <td>{rdv.hour}</td>
         <td>
           {rdv.patient.firstName} {rdv.patient.lastName}
         </td>
         <td>{rdv.patient.phone}</td>
         <td>
-          <Button variant="secondary" onClick={() => setIsModalShown(true)}>
-            Facturer
-          </Button>
+          {rdv.facture == undefined ? (
+            <Button variant="secondary" onClick={() => setIsModalShown(true)}>
+              Facturer
+            </Button>
+          ) : (
+            "Deja facturé"
+          )}
         </td>
       </tr>
 

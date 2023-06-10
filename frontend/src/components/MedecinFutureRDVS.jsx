@@ -23,7 +23,7 @@ const MedecinFutureRDVS = () => {
     error,
   } = useQuery({
     queryFn: () => getMedecinFutureRDVS(userToken),
-    queryKey: ["rendezvous"],
+    queryKey: ["rendezvous", { date: "future" }],
   });
 
   return (

@@ -28,15 +28,19 @@ const PatientOrdonnancesList = () => {
       {ordonnances &&
         (ordonnances.length > 0 ? (
           <Row>
-            {ordonnances.map((ordonnance) => (
+            {ordonnances.slice(0, 3).map((ordonnance) => (
               <Col key={ordonnance._id} xs="12" md="6" lg="4" className="my-2">
                 <Card>
-                  <Card.Header>{formatDate(ordonnance.date)}</Card.Header>
+                  <Card.Header>
+                    <Card.Title>
+                      {ordonnance.rdv.medecin.firstName}{" "}
+                      {ordonnance.rdv.medecin.lastName}
+                    </Card.Title>
+                    <small>
+                      Date de rendez vous: {formatDate(ordonnance.rdv.date)}
+                    </small>
+                  </Card.Header>
                   <Card.Body>
-                    <h4>
-                      {ordonnance.medecin.firstName}{" "}
-                      {ordonnance.medecin.lastName}
-                    </h4>
                     <p>{ordonnance.description}</p>
                     <ul>
                       {ordonnance.medicaments.map((medicament) => (
@@ -47,6 +51,11 @@ const PatientOrdonnancesList = () => {
                       ))}
                     </ul>
                   </Card.Body>
+                  <Card.Footer className="d-flex align-items-center justify-content-between">
+                    <small>
+                      Date d'ordonnance: {formatDate(ordonnance.date)}
+                    </small>
+                  </Card.Footer>
                 </Card>
               </Col>
             ))}

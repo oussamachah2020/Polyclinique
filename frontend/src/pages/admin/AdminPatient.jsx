@@ -47,6 +47,13 @@ const AdminPatient = () => {
     onError: (error) => console.log("error get rdvs", error),
   });
 
+  const pastRDVS = rdvs
+    ? rdvs.filter((rdv) => new Date(rdv.date) < new Date())
+    : undefined;
+  const futureRDVS = rdvs
+    ? rdvs.filter((rdv) => new Date(rdv.date) > new Date())
+    : undefined;
+
   // get all patient factures
   const {
     data: factures,
@@ -146,7 +153,7 @@ const AdminPatient = () => {
 
           <div style={{ flexGrow: 1, flexBasis: 600, flexShrink: 1 }}>
             <div>
-              <h3>Patient rendez-vous</h3>
+              <h3>Patient rendez-vous future</h3>
               {!isLoadingRDVS && isFetching && (
                 <Alert variant="info">
                   Mise a jour... <FontAwesomeIcon icon={faSpinner} spin />
@@ -160,8 +167,8 @@ const AdminPatient = () => {
               {isErrorRDVS && (
                 <Alert variant="error">{getErrorMessage(errorRDVS)}</Alert>
               )}
-              {rdvs &&
-                (rdvs.length > 0 ? (
+              {futureRDVS &&
+                (futureRDVS.length > 0 ? (
                   <Table bordered striped responsive className="w-100">
                     <thead>
                       <tr>
@@ -172,7 +179,7 @@ const AdminPatient = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {rdvs.map((rdv) => (
+                      {futureRDVS.map((rdv) => (
                         <tr key={rdv._id}>
                           <td>
                             <Link to={`/admin/medecins/${rdv.medecin._id}`}>
@@ -201,6 +208,51 @@ const AdminPatient = () => {
                 ) : (
                   <Alert variant="info">
                     Le patient n'a pas encore pris de rendez-vous
+                  </Alert>
+                ))}
+            </div>
+            <div>
+              <h3>Patient rendez-vous passés</h3>
+              {!isLoadingRDVS && isFetching && (
+                <Alert variant="info">
+                  Mise a jour... <FontAwesomeIcon icon={faSpinner} spin />
+                </Alert>
+              )}
+              {isLoadingRDVS && (
+                <Alert variant="info">
+                  Chargement des rendez vous du patient...
+                </Alert>
+              )}
+              {isErrorRDVS && (
+                <Alert variant="error">{getErrorMessage(errorRDVS)}</Alert>
+              )}
+              {pastRDVS &&
+                (pastRDVS.length > 0 ? (
+                  <Table bordered striped responsive className="w-100">
+                    <thead>
+                      <tr>
+                        <th>Medecin</th>
+                        <th>Date de rendez vous</th>
+                        <th>Date de reservation</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {pastRDVS.map((rdv) => (
+                        <tr key={rdv._id}>
+                          <td>
+                            <Link to={`/admin/medecins/${rdv.medecin._id}`}>
+                              {rdv.medecin.firstName} {rdv.medecin.lastName}
+                            </Link>
+                          </td>
+                          <td>{formatDate(rdv.date)}</td>
+                          <td>{formatDate(rdv.createdAt)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </Table>
+                ) : (
+                  <Alert variant="info">
+                    Le patient n'a pas des rendez vous passés
                   </Alert>
                 ))}
             </div>

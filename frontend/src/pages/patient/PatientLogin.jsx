@@ -97,12 +97,6 @@ function PatientLogin() {
                   />
                 </div>
 
-                <div className="form-link">
-                  <a href="#" className="forgot-pass">
-                    Forgot password ?
-                  </a>
-                </div>
-
                 <div className="field">
                   <button
                     onClick={() => mutate()}

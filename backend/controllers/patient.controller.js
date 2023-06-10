@@ -136,7 +136,53 @@ const login = AsyncHandler(async (req, res) => {
   return res.status(200).json(token);
 });
 
-const restorePassword = AsyncHandler(async (req, res) => {});
+const updatePatientProfile = async (req, res) => {
+  const { firstName, lastName, email, phone, currentPassword, newPassword } =
+    req.body;
+  const { _id: patientID } = req.patient;
+
+  try {
+    let patient = await Patient.findById(patientID);
+
+    if (!patient) {
+      return res.status(404).json({ message: "Patient not found" });
+    }
+
+    // Update basic profile fields
+    patient.firstName = firstName;
+    patient.lastName = lastName;
+    patient.email = email;
+    patient.phone = phone;
+
+    if (currentPassword && newPassword) {
+      // Password change requested
+      const isPasswordMatch = await bcrypt.compare(
+        currentPassword,
+        patient.password
+      );
+
+      if (!isPasswordMatch) {
+        return res
+          .status(400)
+          .json({ message: "Mot de passe actuel incorrect" });
+      }
+
+      // Hash and update the new password
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      patient.password = hashedPassword;
+    }
+
+    // Save the updated patient profile
+    patient = await patient.save();
+
+    return res.json({ message: "Profil mis à jour avec succès", patient });
+  } catch (error) {
+    console.log("Error updating profile:", error);
+    return res.status(500).json({
+      message: "Une erreur s'est produite lors de la mise à jour du profil",
+    });
+  }
+};
 
 module.exports = {
   register,
@@ -146,4 +192,5 @@ module.exports = {
   getPatientProfile,
   deletePatient,
   getPatientData,
+  updatePatientProfile,
 };

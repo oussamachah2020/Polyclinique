@@ -1,11 +1,11 @@
 const express = require("express");
 const {
-  getRDV,
   deleteRDV,
   addRDV,
   getMedecinFutureRDVS,
   getMedecinRDVS,
   getAllRDVS,
+  getDoctorPastRDVS,
 } = require("../controllers/rdv.controller");
 const patientAuth = require("../Middleware/patientAuthMiddleware");
 const medecinAuth = require("../Middleware/medecinAuthMiddleware");
@@ -19,10 +19,10 @@ route.get("/all", adminAuth, getAllRDVS);
 route.post("/", patientAuth, addRDV);
 route.delete("/:id", deleteRDV);
 
-route.get("/medecin", medecinAuth, getMedecinRDVS);
-
-route.get("/medecin/past", medecinAuth, getMedecinPastRDVS);
+route.get("/medecin/past", medecinAuth, getDoctorPastRDVS);
 route.get("/medecin/future", medecinAuth, getMedecinFutureRDVS);
+
+route.get("/medecin", medecinAuth, getMedecinRDVS);
 
 route.get("/medecin/:idDoctor/future", adminAuth, getMedecinFutureRDVS);
 route.get("/medecin/:idDoctor/past", adminAuth, getMedecinPastRDVS);

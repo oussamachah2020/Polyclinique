@@ -35,6 +35,7 @@ const MedecinPastRDVS = () => {
             <thead>
               <tr>
                 <th>Date</th>
+                <th>Heure</th>
                 <th>Patient</th>
                 <th>Telephone</th>
                 <th>Facturer</th>

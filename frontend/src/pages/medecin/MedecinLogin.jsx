@@ -91,11 +91,7 @@ const MedecinLogin = () => {
                     }
                   />
                 </div>
-                <div className="form-link">
-                  <a href="#" className="forgot-pass">
-                    Forgot password ?
-                  </a>
-                </div>
+
                 <div className="field">
                   <button className="btn-primary" disabled={isLoading}>
                     {isLoading ? (
