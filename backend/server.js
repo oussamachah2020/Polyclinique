@@ -9,6 +9,7 @@ const ordonnanceRoutes = require("./routes/ordonnance.routes");
 const statsRoutes = require("./routes/stats.routes");
 
 const DB = require("./DB/conn");
+const sendEmail = require("./utils/resetPassword");
 
 const app = express();
 
@@ -18,6 +19,14 @@ app.use(cors());
 
 DB();
 
+// reset password
+app.post("/send_recovery_email", (req, res) => {
+  sendEmail(req.body)
+    .then((response) => res.send(response.message))
+    .catch((error) => res.status(500).send(error.message));
+});
+
+app.use("/contact", require("./routes/contact.routes"));
 app.use("/admin", require("./routes/admin.routes"));
 app.use("/patient", require("./routes/patient.routes"));
 app.use("/medecin", require("./routes/medecin.routes"));

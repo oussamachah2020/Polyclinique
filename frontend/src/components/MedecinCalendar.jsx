@@ -11,17 +11,18 @@ const MedecinCalendar = () => {
   const { userToken } = useUserContext();
   console.log("medecin token", userToken);
   const {
-    data: futureRDVS,
+    data: rdvs,
     isLoading,
     isError,
     error,
   } = useQuery({
     queryFn: () => getMedecinRDVS(userToken),
-    queryKey: ["rendezvous"],
+    onSuccess: (data) => console.log("rdvs", data),
+    queryKey: ["medecin", "rendezvous"],
   });
   const events =
-    futureRDVS &&
-    futureRDVS.map((rdv) => ({
+    rdvs &&
+    rdvs.map((rdv) => ({
       title: `${rdv.hour} RDV avec ${rdv.patient.firstName} ${rdv.patient.lastName}`,
       date: rdv.date,
     }));

@@ -1,63 +1,73 @@
 const Ordonnance = require("../models/OrdonnanceModal");
-
+const AsyncHandler = require("express-async-handler");
+const RDV = require("../models/rendezVous.modal");
 // get patient ordonnances
+
 const getPatientOrdonnances = async (req, res) => {
   const { _id: patientID } = req.patient;
   console.log("get ordonnances hit");
-  try {
-    const ordonnances = await Ordonnance.find({ patient: patientID })
-      .populate("medecin", "firstName lastName")
-      .sort({ date: -1 });
 
-    res.status(200).json(ordonnances);
+  try {
+    const ordonnances = await Ordonnance.find({
+      rdv: { $in: await RDV.find({ patient: patientID }) },
+    })
+      .populate({
+        path: "rdv",
+        select: "-ordonnances",
+        populate: {
+          path: "medecin",
+          select: "firstName lastName phone",
+        },
+      }) // Populate the medecin field of the RDV
+      .sort({ date: -1 });
+    return res.json(ordonnances);
   } catch (error) {
-    console.log("error ordonnances", error);
-    res.status(500).json(error);
+    console.log("error get doctor factures", error);
+    return res.status(500).json(error);
   }
 };
 
-// get medecin ordonnances
-const getMedecinOrdonnances = async (req, res) => {
+const getMedecinOrdonnances = AsyncHandler(async (req, res) => {
   const { _id: medecinID } = req.medecin;
-  console.log("api hit");
-  try {
-    const ordonnances = await Ordonnance.find({ medecin: medecinID })
-      .populate("patient", "lastName firstName")
-      .sort({ date: -1 });
 
-    res.status(200).json(ordonnances);
+  try {
+    const ordonnances = await Ordonnance.find({
+      rdv: { $in: await RDV.find({ medecin: medecinID }) },
+    })
+      .populate({
+        path: "rdv",
+        select: "-ordonnances",
+        populate: {
+          path: "patient",
+          select: "firstName lastName phone",
+        },
+      }) // Populate the medecin field of the RDV
+      .sort({ date: -1 });
+    return res.json(ordonnances);
   } catch (error) {
-    console.log("eroor", error);
-    res.status(500).json(error);
+    console.log("error get doctor factures", error);
+    return res.status(500).json(error);
   }
-};
+});
 
 // ajouter une ordonnance
 const addOrdonnance = async (req, res) => {
-  console.log("api hit");
-  const { _id: medecinID } = req.medecin;
-  const { patientID, description, medicaments } = req.body;
+  const { rdv, description, medicaments } = req.body;
 
-  if (!patientID)
-    return res
-      .status(400)
-      .json({ message: "L'identifiant du patient est obligatoire" });
+  if (!rdv)
+    return res.status(400).json({ message: "Non rendez vous selectionné" });
   if (!medicaments)
     return res
       .status(400)
       .json({ message: "Les medicaments sonts obligatoires" });
   try {
-    const ordonnance = await Ordonnance.create({
-      medecin: medecinID,
-      patient: patientID,
+    await Ordonnance.create({
+      rdv,
       description,
       medicaments,
     });
-    const populatedOrdonnance = await ordonnance.populate(
-      "patient",
-      "lastName firstName"
-    );
-    res.status(201).json(populatedOrdonnance);
+
+    res.status(201).json({ message: "Ordonnance envoyé avec success" });
   } catch (error) {
     console.log("erooor", error);
     res.status(500).json(error);

@@ -8,6 +8,7 @@ import { getMedecinRDVS } from "../../api/rendezvous";
 import { useQuery } from "@tanstack/react-query";
 import { getErrorMessage } from "../../helpers/getErrorMessage";
 import { Helmet } from "react-helmet";
+import MedecinFutureRDVS from "../../components/MedecinFutureRDVS";
 const DoctorCalendarPage = () => {
   const { userToken } = useUserContext();
   console.log("medecin token", userToken);
@@ -42,6 +43,10 @@ const DoctorCalendarPage = () => {
           initialView="dayGridMonth"
           events={events}
         />
+
+        <div className="mt-4">
+          <MedecinFutureRDVS />
+        </div>
       </Container>
     </>
   );

@@ -26,7 +26,7 @@ export const postFacture = async (factureData, doctorToken) => {
 };
 
 export const deleteFacture = async (factureID, doctorToken) => {
-  const response = await axios.delete(
+  const response = await api.delete(
     `/factures/${factureID}`,
 
     {

@@ -7,6 +7,7 @@ const {
   getPatientProfile,
   deletePatient,
   getPatientData,
+  updatePatientProfile,
 } = require("../controllers/patient.controller");
 const patientAuth = require("../Middleware/patientAuthMiddleware");
 const medecinAuth = require("../Middleware/medecinAuthMiddleware");
@@ -19,6 +20,7 @@ const adminAuth = require("../Middleware/adminAuthMiddleware");
 
 route.get("/all", adminAuth, getAllPatients);
 route.get("/", patientAuth, getPatientProfile);
+route.put("/", patientAuth, updatePatientProfile);
 
 route.get("/factures", patientAuth, getPatientFactures);
 route.get("/ordonnances", patientAuth, getPatientOrdonnances);

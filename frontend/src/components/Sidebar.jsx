@@ -140,7 +140,9 @@ const Sidebar = () => {
               {isError && (
                 <Alert variant="error">{getErrorMessage(error)}</Alert>
               )}
-              {patient && `${patient.firstName} ${patient.lastName}`}
+              <Link to="/patient/profile">
+                {patient && `${patient.firstName} ${patient.lastName}`}
+              </Link>
             </div>
           </div>
           <button

@@ -75,7 +75,7 @@ const PatientSignup = () => {
         className="py-4 d-flex align-items-center justify-content-center"
         style={{ minHeight: "100vh" }}
       >
-        <Card style={{ width: 400, maxWidth: "100%" }}>
+        <Card style={{ width: 600, maxWidth: "100%" }}>
           <Card.Header>
             <Card.Title>Créer un compte</Card.Title>
           </Card.Header>
@@ -143,70 +143,82 @@ const PatientSignup = () => {
                   </Form.Group>
                 </Col>
               </Row>
-              <Form.Group className="mt-2">
-                <Form.Label>Date de naissance</Form.Label>
-                <Form.Control
-                  type="date"
-                  value={formData.dateOfBirth}
-                  onChange={(e) =>
-                    setFormData((prevData) => ({
-                      ...prevData,
-                      dateOfBirth: e.target.value,
-                    }))
-                  }
-                />
-              </Form.Group>
-              <Form.Group className="mt-2">
-                <Form.Label>Numero de telephone</Form.Label>
-                <Form.Control
-                  type="tel"
-                  value={formData.phone}
-                  onChange={(e) =>
-                    setFormData((prevData) => ({
-                      ...prevData,
-                      phone: e.target.value,
-                    }))
-                  }
-                />
-              </Form.Group>
-
-              <Form.Group className="mt-2">
-                <Form.Label>Mot de passe</Form.Label>
-                <InputGroup>
-                  <Form.Control
-                    type={!visible ? "password" : "text"}
-                    value={formData.password}
-                    onChange={(e) =>
-                      setFormData((prevData) => ({
-                        ...prevData,
-                        password: e.target.value,
-                      }))
-                    }
-                  />
-                  <InputGroup.Text id="basic-addon2">
-                    <FontAwesomeIcon
-                      onClick={() => setVisible((prev) => !prev)}
-                      icon={visible ? faEyeSlash : faEye}
-                      color="black"
+              <Row>
+                <Col>
+                  <Form.Group className="mt-2">
+                    <Form.Label>Date de naissance</Form.Label>
+                    <Form.Control
+                      type="date"
+                      value={formData.dateOfBirth}
+                      onChange={(e) =>
+                        setFormData((prevData) => ({
+                          ...prevData,
+                          dateOfBirth: e.target.value,
+                        }))
+                      }
                     />
-                  </InputGroup.Text>
-                </InputGroup>
-              </Form.Group>
-              <Form.Group className="mt-2">
-                <Form.Label>Confirmation mot de passe</Form.Label>
-                <InputGroup>
-                  <Form.Control
-                    type={!visible ? "password" : "text"}
-                    value={formData.confirmPassword}
-                    onChange={(e) =>
-                      setFormData((prevData) => ({
-                        ...prevData,
-                        confirmPassword: e.target.value,
-                      }))
-                    }
-                  />
-                </InputGroup>
-              </Form.Group>
+                  </Form.Group>
+                </Col>
+                <Col>
+                  <Form.Group className="mt-2">
+                    <Form.Label>Numero de telephone</Form.Label>
+                    <Form.Control
+                      type="tel"
+                      value={formData.phone}
+                      onChange={(e) =>
+                        setFormData((prevData) => ({
+                          ...prevData,
+                          phone: e.target.value,
+                        }))
+                      }
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+
+              <Row>
+                <Col>
+                  <Form.Group className="mt-2">
+                    <Form.Label>Mot de passe</Form.Label>
+                    <InputGroup>
+                      <Form.Control
+                        type={!visible ? "password" : "text"}
+                        value={formData.password}
+                        onChange={(e) =>
+                          setFormData((prevData) => ({
+                            ...prevData,
+                            password: e.target.value,
+                          }))
+                        }
+                      />
+                      <InputGroup.Text id="basic-addon2">
+                        <FontAwesomeIcon
+                          onClick={() => setVisible((prev) => !prev)}
+                          icon={visible ? faEyeSlash : faEye}
+                          color="black"
+                        />
+                      </InputGroup.Text>
+                    </InputGroup>
+                  </Form.Group>
+                </Col>
+                <Col>
+                  <Form.Group className="mt-2">
+                    <Form.Label>Confirmation mot de passe</Form.Label>
+                    <InputGroup>
+                      <Form.Control
+                        type={!visible ? "password" : "text"}
+                        value={formData.confirmPassword}
+                        onChange={(e) =>
+                          setFormData((prevData) => ({
+                            ...prevData,
+                            confirmPassword: e.target.value,
+                          }))
+                        }
+                      />
+                    </InputGroup>
+                  </Form.Group>
+                </Col>
+              </Row>
 
               <Button
                 disabled={isLoading}

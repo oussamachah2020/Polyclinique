@@ -23,18 +23,6 @@ const medecinSchema = mongoose.Schema({
     required: true,
   },
 
-  permanent: {
-    type: Boolean,
-    required: false,
-  },
-  speciality: {
-    type: String,
-    required: false,
-  },
-  salary: {
-    type: Number,
-    required: false,
-  },
   department: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "departements",

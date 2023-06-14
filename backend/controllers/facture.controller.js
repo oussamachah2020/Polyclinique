@@ -4,7 +4,13 @@ const RDV = require("../models/rendezVous.modal");
 
 // post facture
 const postFacture = AsyncHandler(async (req, res) => {
+  const { rdv } = req.body;
+
   try {
+    const dejaFacturé = await Facture.findOne({ rdv });
+    console.log("facture found", dejaFacturé);
+    if (dejaFacturé)
+      return res.status(400).json({ message: "Rendez vous deja facturé" });
     const facture = await Facture.create(req.body);
     res.status(201).json(facture);
   } catch (error) {
@@ -31,7 +37,6 @@ const deleteFacture = AsyncHandler(async (req, res) => {
 
 // get patient factures
 const getPatientFactures = AsyncHandler(async (req, res) => {
-  console.log("api hit");
   const { isPaid } = req.query;
   const patientID = req.patient ? req.patient._id : req.params.idPatient;
   const queryFilter =
@@ -63,7 +68,6 @@ const getPatientFactures = AsyncHandler(async (req, res) => {
   }
 });
 const getDoctorFactures = AsyncHandler(async (req, res) => {
-  console.log("api hit");
   const { _id: medecinID } = req.medecin;
 
   try {
@@ -72,7 +76,7 @@ const getDoctorFactures = AsyncHandler(async (req, res) => {
     })
       .populate({
         path: "rdv",
-        select: "-factures",
+        select: "-facture",
         populate: {
           path: "patient",
           select: "firstName lastName phone",
@@ -98,7 +102,6 @@ const updateFacture = async (req, res) => {
 };
 
 const getFacture = AsyncHandler(async (req, res) => {
-  console.log("api hit");
   const { factureID } = req.params;
 
   try {
@@ -122,13 +125,11 @@ const getFacture = AsyncHandler(async (req, res) => {
   }
 });
 const getAllFactures = AsyncHandler(async (req, res) => {
-  console.log("api hit");
-
   try {
     const factures = await Facture.find()
       .populate({
         path: "rdv",
-        select: "-factures",
+        select: "-facture",
         populate: [
           { path: "patient", select: "firstName lastName phone email" },
           { path: "medecin", select: "firstName lastName email phone" },

@@ -13,20 +13,23 @@ import { getAllPatients, getDoctorPatients } from "../api/patient";
 import { useUserContext } from "../contexts/useUserContext";
 import { getErrorMessage } from "../helpers/getErrorMessage";
 import { postOrdonnance } from "../api/ordonnance";
+import { getDoctorPastRDVS } from "../api/rendezvous";
+import formatDate from "../helpers/formatDate";
 const OrdonnanceForm = () => {
   const { userToken } = useUserContext();
   const queryClient = useQueryClient();
-  const [selectedPatientID, setSelectedPatientID] = useState("");
+
   const {
-    data: patientsList,
-    isLoading: loadingPatients,
+    data: pastRDVS,
+    isLoading: isLoadingRDVS,
     isError,
     error,
   } = useQuery({
-    queryFn: () => getDoctorPatients(userToken),
-    queryKey: ["patients"],
+    queryFn: () => getDoctorPastRDVS(userToken),
+    queryKey: ["doctor", "rdvs", { time: "past" }],
+    onSuccess: (data) => console.log("past rdvs", data),
+    onError: (error) => console.log("error past rdvs", error),
   });
-
   const {
     mutate,
     isLoading,
@@ -34,12 +37,17 @@ const OrdonnanceForm = () => {
     error: errorPost,
   } = useMutation({
     mutationFn: (ordonnanceData) => postOrdonnance(ordonnanceData, userToken),
-    onSuccess: () => {
+    onSuccess: (data) => {
+      toast.success(data.message);
       queryClient.invalidateQueries(["ordonnances"]);
       setMedicaments([]);
       setNomMedicament("");
       setMethodeUtilisation("");
       setDescription("");
+    },
+    onError: (error) => {
+      toast.error(getErrorMessage(error));
+      console.log("error post ordonnance", error);
     },
   });
 
@@ -62,7 +70,7 @@ const OrdonnanceForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!selectedPatientID)
+    if (selectedRDVID == "Rendez vous")
       return toast.error("S'il vous plait selectionnez un patient");
     if (medicaments.length == 0)
       return toast.error(
@@ -70,7 +78,7 @@ const OrdonnanceForm = () => {
       );
 
     const ordonnanceData = {
-      patientID: selectedPatientID,
+      rdv: selectedRDVID,
       description,
       medicaments,
     };
@@ -78,13 +86,7 @@ const OrdonnanceForm = () => {
     mutate(ordonnanceData);
   };
 
-  if (loadingPatients) {
-    return (
-      <Card>
-        <FontAwesomeIcon icon={faSpinner} spin />
-      </Card>
-    );
-  }
+  const [selectedRDVID, setSelectedRDVID] = useState("Rendez vous");
 
   return (
     <Card>
@@ -95,39 +97,28 @@ const OrdonnanceForm = () => {
       {isErrorPost && (
         <Alert variant="danger">{getErrorMessage(errorPost)}</Alert>
       )}
-      {loadingPatients && (
-        <Alert variant="info">Chargement des patients...</Alert>
+      {isLoadingRDVS && (
+        <Alert variant="info">Chargement des rendezvous passés...</Alert>
       )}
-      {patientsList &&
-        (patientsList.length > 0 ? (
+      {pastRDVS &&
+        (pastRDVS.length > 0 ? (
           <>
             <Form className="mt-0" onSubmit={handleSubmit}>
               <Card.Body>
                 <Form.Group>
-                  <Form.Label>Patient</Form.Label>
-
-                  <Typeahead
-                    id="selectionner patient"
-                    labelKey={(option) =>
-                      `${option.firstName} ${option.lastName}`
-                    }
-                    options={patientsList}
-                    placeholder="Choisir patient"
-                    onChange={(selected) => {
-                      if (selected.length > 0)
-                        setSelectedPatientID(selected[0]._id);
-                      else setSelectedPatientID(null);
-                    }}
-                    selected={
-                      selectedPatientID
-                        ? [
-                            patientsList.find(
-                              (patient) => patient._id === selectedPatientID
-                            ),
-                          ]
-                        : []
-                    }
-                  />
+                  <Form.Label>Rendez vous</Form.Label>
+                  <Form.Select
+                    value={selectedRDVID}
+                    onChange={(e) => setSelectedRDVID(e.target.value)}
+                  >
+                    <option>Rendezvous</option>
+                    {pastRDVS.map((rdv) => (
+                      <option key={rdv._id} value={rdv._id}>
+                        {formatDate(rdv.date)} avec {rdv.patient.firstName}{" "}
+                        {rdv.patient.lastName}
+                      </option>
+                    ))}
+                  </Form.Select>
                 </Form.Group>
                 <Form.Group
                   className="mt-3"

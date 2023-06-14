@@ -20,10 +20,14 @@ const RdvSchema = mongoose.Schema(
       ref: "patients",
       required: true,
     },
-    factures: [
+    facture: {
+      type: Schema.Types.ObjectId,
+      ref: "factures",
+    },
+    ordonnances: [
       {
         type: Schema.Types.ObjectId,
-        ref: "factures",
+        ref: "ordonnances",
       },
     ],
   },

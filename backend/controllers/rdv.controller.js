@@ -1,25 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const RDV = require("../models/rendezVous.modal");
 
-const getRDV = asyncHandler(async (req, res) => {
-  const { time } = req.body;
-
-  const rdv = await RDV.create({
-    time,
-    patientId: req.patient,
-    personnalId: req.personnal,
-    serviceId: req.service,
-  });
-
-  if (rdv) {
-    res
-      .status(201)
-      .json({ msg: `rendez-vous confirmer pour le ${time}`, time });
-  } else {
-    res.status(400).json({ msg: `une erreur` });
-  }
-});
-
 const addRDV = asyncHandler(async (req, res) => {
   const { medecinID, date, hour } = req.body;
   if (!medecinID || !date || !hour) {
@@ -62,13 +43,17 @@ const deleteRDV = asyncHandler(async (req, res) => {
 });
 
 const getMedecinFutureRDVS = async (req, res) => {
+  console.log("future rdvs hit");
   const medecinID = req.medecin ? req.medecin._id : req.params.idDoctor;
   try {
     const futureRDVS = await RDV.find({
       medecin: medecinID,
       date: { $gte: new Date() },
-    }).populate("patient", "lastName firstName phone");
+    })
+      .populate("patient", "lastName firstName phone")
+      .sort({ date: 1 });
 
+    console.log("future rdvs", futureRDVS);
     return res.status(200).json(futureRDVS);
   } catch (error) {
     console.log("erroor", error);
@@ -76,11 +61,15 @@ const getMedecinFutureRDVS = async (req, res) => {
   }
 };
 const getMedecinRDVS = async (req, res) => {
+  console.log("medecin rdvs hit");
   const medecinID = req.medecin ? req.medecin._id : req.params.idDoctor;
+  console.log("medecin id", medecinID);
   try {
     const rdvs = await RDV.find({
       medecin: medecinID,
     }).populate("patient", "lastName firstName phone");
+
+    console.log("rdvs", rdvs);
 
     return res.status(200).json(rdvs);
   } catch (error) {
@@ -90,6 +79,7 @@ const getMedecinRDVS = async (req, res) => {
 };
 
 const getDoctorPastRDVS = async (req, res) => {
+  console.log("get doctor past rdvs hit");
   const medecinID = req.medecin ? req.medecin._id : req.params.idDoctor;
 
   const currentDate = new Date();
@@ -98,7 +88,10 @@ const getDoctorPastRDVS = async (req, res) => {
     const rdvs = await RDV.find({
       medecin: medecinID,
       date: { $lt: currentDate },
-    }).populate("patient", "lastName firstName phone");
+    })
+
+      .populate("patient", "lastName firstName phone")
+      .sort({ date: -1 });
 
     return res.status(200).json(rdvs);
   } catch (error) {
@@ -139,7 +132,6 @@ const getAllRDVS = async (req, res) => {
 
 module.exports = {
   getAllRDVS,
-  getRDV,
   deleteRDV,
   addRDV,
   getMedecinFutureRDVS,

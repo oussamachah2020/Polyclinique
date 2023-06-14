@@ -31,7 +31,9 @@ const PatientRDVS = () => {
     onSuccess: () => queryClient.invalidateQueries(["rendezvous"]),
   });
   const pastRDVS = rdvs
-    ? rdvs.filter((rdv) => new Date(rdv.date) < new Date())
+    ? rdvs
+        .filter((rdv) => new Date(rdv.date) < new Date())
+        .sort((a, b) => new Date(b.date) - new Date(a.date))
     : undefined;
   const futureRDVS = rdvs
     ? rdvs.filter((rdv) => new Date(rdv.date) > new Date())

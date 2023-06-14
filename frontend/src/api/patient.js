@@ -72,3 +72,13 @@ export const getPatientData = async (patientID, adminToken) => {
 
   return response.data;
 };
+
+export const updatePatientProfile = async (updateData, patientToken) => {
+  const response = await api.put("/patient", updateData, {
+    headers: {
+      Authorization: `Bearer ${patientToken}`,
+    },
+  });
+
+  return response.data;
+};

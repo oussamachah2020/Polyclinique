@@ -9,7 +9,7 @@ import { faUserCircle } from "@fortawesome/free-solid-svg-icons";
 import { useUserContext } from "../contexts/useUserContext";
 const AdminNavbar = () => {
   const { logout, userToken } = useUserContext();
-  if (!userToken) return <Navigate to="/" />;
+  if (!userToken) return <Navigate to="/admin/login" />;
   return (
     <>
       <Navbar className="mt-0" bg="light" expand="lg">
@@ -27,6 +27,14 @@ const AdminNavbar = () => {
             <Nav className="ms-auto">
               {userToken ? (
                 <>
+                  <NavLink
+                    className={(isActive) =>
+                      "nav-link" + (isActive ? "" : " text-primary")
+                    }
+                    to="/admin/messages"
+                  >
+                    Messages de contact
+                  </NavLink>
                   <NavLink
                     className={(isActive) =>
                       "nav-link" + (isActive ? "" : " text-primary")
