@@ -1,4 +1,6 @@
 const express = require("express");
+const router = express.Router();
+
 const {
   adminLogin,
   createAdmin,
@@ -6,7 +8,6 @@ const {
   updateAdminProfile,
 } = require("../controllers/admin.controller");
 const adminAuth = require("../Middleware/adminAuthMiddleware");
-const router = express.Router();
 
 router.post("/login", adminLogin);
 router.get("/profile", adminAuth, getAdminProfile);

@@ -31,6 +31,14 @@ const AdminNavbar = () => {
                     className={(isActive) =>
                       "nav-link" + (isActive ? "" : " text-primary")
                     }
+                    to="/admin/messages"
+                  >
+                    Messages de contact
+                  </NavLink>
+                  <NavLink
+                    className={(isActive) =>
+                      "nav-link" + (isActive ? "" : " text-primary")
+                    }
                     to="/admin/medecins"
                   >
                     Medecins

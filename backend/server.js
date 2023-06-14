@@ -26,6 +26,7 @@ app.post("/send_recovery_email", (req, res) => {
     .catch((error) => res.status(500).send(error.message));
 });
 
+app.use("/contact", require("./routes/contact.routes"));
 app.use("/admin", require("./routes/admin.routes"));
 app.use("/patient", require("./routes/patient.routes"));
 app.use("/medecin", require("./routes/medecin.routes"));
